@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { RegionService } from './region-service';
-import { Region } from '../models/region.model';
+import { Region } from '../../models/region.model';
 
 
 
