@@ -1,6 +1,6 @@
 export interface Municipality {
     nom: string;
     code: string;
-    codeDepartment: string;
+    codeDepartement: string;
     codeRegion: string;
 }
