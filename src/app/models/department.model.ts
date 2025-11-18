@@ -1,5 +1,5 @@
 export interface Department {
-    name: string;
+    nom: string;
     code : string 
     codeRegion : string;
     _score : number;

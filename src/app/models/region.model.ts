@@ -1,5 +1,4 @@
 export interface Region {
-    name: string;
-    code : string 
-    _score : number;
+    nom: string;
+    code : string;
 }
