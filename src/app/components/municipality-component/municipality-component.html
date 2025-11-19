@@ -1,0 +1,41 @@
+<div class="municipality-container">
+  <h2>Communes du département {{ departmentCode() }}</h2>
+
+  @if (isLoading()) {
+    <div class="loading">
+      <p>Chargement des communes...</p>
+    </div>
+  }
+
+  @if (!isLoading() && municipalities().length === 0) {
+    <div class="no-data">
+      <p>Aucune commune trouvée pour ce département.</p>
+    </div>
+  }
+
+  @if (!isLoading() && municipalities().length > 0) {
+    <div class="municipalities-list">
+      <p class="count">{{ municipalities().length }} commune(s) trouvée(s)</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Code</th>
+            <th>Code Département</th>
+            <th>Code Région</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (municipality of municipalities(); track municipality.code) {
+            <tr>
+              <td>{{ municipality.nom }}</td>
+              <td>{{ municipality.code }}</td>
+              <td>{{ municipality.codeDepartement }}</td>
+              <td>{{ municipality.codeRegion }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
