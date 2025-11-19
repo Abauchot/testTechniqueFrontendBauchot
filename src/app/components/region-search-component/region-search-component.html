@@ -1,0 +1,59 @@
+<div class="region-search-container">
+  <h2>Recherche de Région</h2>
+  
+  <form [formGroup]="searchForm" class="search-form">
+    <div class="form-group">
+      <label for="regionName">Nom de la région :</label>
+      <input 
+        type="text" 
+        id="regionName" 
+        formControlName="regionName" 
+        placeholder="Saisir le nom d'une région (ex: Normandie)"
+        class="form-control"
+        autocomplete="off"
+      />
+      
+      @if (isLoading()) {
+        <div class="loading-spinner">Chargement...</div>
+      }
+      
+      @if (filteredRegions$ | async; as regions) {
+        @if (regions.length > 0 && !selectedRegion()) {
+          <ul class="autocomplete-list">
+            @for (region of regions; track region.code) {
+              <li 
+                (click)="onRegionSelected(region)" 
+                class="autocomplete-item"
+              >
+                {{ region.nom }} ({{ region.code }})
+              </li>
+            }
+          </ul>
+        }
+      }
+    </div>
+  </form>
+
+  @if (selectedRegion()) {
+    <div class="selected-region">
+      <h3>Région sélectionnée : {{ selectedRegion()?.nom }}</h3>
+      <p>Code région : {{ selectedRegion()?.code }}</p>
+    </div>
+  }
+
+  @if (departments().length > 0) {
+    <div class="departments-section">
+      <h3>Départements de {{ selectedRegion()?.nom }}</h3>
+      <ul class="departments-list">
+        @for (department of departments(); track department.code) {
+          <li 
+            (click)="onDepartmentClick(department)" 
+            class="department-item"
+          >
+            {{ department.nom }} ({{ department.code }})
+          </li>
+        }
+      </ul>
+    </div>
+  }
+</div>
