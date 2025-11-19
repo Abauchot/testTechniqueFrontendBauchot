@@ -15,7 +15,25 @@
 
   @if (!isLoading() && municipalities().length > 0) {
     <div class="municipalities-list">
-      <p class="count">{{ municipalities().length }} commune(s) trouvée(s)</p>
+      <div class="list-header">
+        <p class="count">{{ municipalities().length }} commune(s) trouvée(s)</p>
+        
+        <div class="page-size-selector">
+          <label for="pageSize">Afficher : </label>
+          <select 
+            id="pageSize" 
+            [value]="pageSize()" 
+            (change)="onPageSizeChange(+$any($event.target).value)"
+            class="page-size-select"
+          >
+            @for (option of pageSizeOptions; track option) {
+              <option [value]="option">{{ option }}</option>
+            }
+          </select>
+          <span> par page</span>
+        </div>
+      </div>
+
       <table>
         <thead>
           <tr>
@@ -26,7 +44,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (municipality of municipalities(); track municipality.code) {
+          @for (municipality of paginatedMunicipalities(); track municipality.code) {
             <tr>
               <td>{{ municipality.nom }}</td>
               <td>{{ municipality.code }}</td>
@@ -36,6 +54,47 @@
           }
         </tbody>
       </table>
+
+      <div class="pagination">
+        <button 
+          class="pagination-button" 
+          (click)="previousPage()"
+          [disabled]="currentPage() === 1"
+        >
+          ← Précédent
+        </button>
+
+        <div class="page-numbers">
+          @for (pageNum of visiblePages(); track $index) {
+            @if (isNumber(pageNum)) {
+              <button
+                class="page-number"
+                [class.active]="currentPage() === pageNum"
+                (click)="goToPage($any(pageNum))"
+              >
+                {{ pageNum }}
+              </button>
+            } @else {
+              <span class="page-ellipsis">{{ pageNum }}</span>
+            }
+          }
+        </div>
+
+        <button 
+          class="pagination-button" 
+          (click)="nextPage()"
+          [disabled]="currentPage() === totalPages()"
+        >
+          Suivant →
+        </button>
+      </div>
+
+      <div class="pagination-info">
+        Page {{ currentPage() }} sur {{ totalPages() }}
+        (Affichage de {{ (currentPage() - 1) * pageSize() + 1 }} à 
+        {{ Math.min(currentPage() * pageSize(), municipalities().length) }} 
+        sur {{ municipalities().length }} communes)
+      </div>
     </div>
   }
 </div>
