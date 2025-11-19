@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { RegionSearchComponent } from './region-search-component';
 import { RegionService } from '../../services/region/region-service';
@@ -22,6 +22,14 @@ describe('RegionSearchComponent', () => {
     const departmentServiceSpy = jasmine.createSpyObj('DepartmentService', ['getDepartmentsByRegion']);
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
+    const activatedRouteMock = {
+      snapshot: {
+        paramMap: {
+          get: () => null 
+        }
+      }
+    };
+
     await TestBed.configureTestingModule({
       imports: [RegionSearchComponent, ReactiveFormsModule],
       providers: [
@@ -29,7 +37,8 @@ describe('RegionSearchComponent', () => {
         provideHttpClientTesting(),
         { provide: RegionService, useValue: regionServiceSpy },
         { provide: DepartmentService, useValue: departmentServiceSpy },
-        { provide: Router, useValue: routerSpy }
+        { provide: Router, useValue: routerSpy },
+        { provide: ActivatedRoute, useValue: activatedRouteMock }
       ]
     }).compileComponents();
 
@@ -118,6 +127,7 @@ describe('RegionSearchComponent', () => {
     expect(departmentService.getDepartmentsByRegion).toHaveBeenCalledWith('28');
     expect(component.departments().length).toBe(2);
     expect(component.selectedRegion()).toEqual(selectedRegion);
+    expect(router.navigate).toHaveBeenCalledWith(['/search', '28'], { replaceUrl: true });
   });
 
   it('should navigate to municipality list when department is clicked', () => {

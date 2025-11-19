@@ -96,6 +96,10 @@ label {
   color: #555;
 }
 
+.departments-section {
+  margin-top: 1.5rem;
+}
+
 .departments-section h3 {
   color: #333;
   margin-bottom: 1rem;
@@ -121,4 +125,16 @@ label {
   background: #4CAF50;
   color: white;
   transform: translateX(5px);
+}
+
+@media (max-width: 768px) {
+  .departments-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .new-search-button {
+    width: 100%;
+  }
 }
