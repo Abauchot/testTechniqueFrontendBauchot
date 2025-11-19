@@ -1,4 +1,10 @@
 <div class="municipality-container">
+  <div class="header-actions">
+    <button class="search-button" (click)="goToSearch()">
+      🔍 Nouvelle recherche
+    </button>
+  </div>
+  
   <h2>Communes du département {{ departmentCode() }}</h2>
 
   @if (isLoading()) {

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, filter, map, startWith, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, map, startWith, tap } from 'rxjs/operators';
 import { RegionService } from '../../services/region/region-service';
 import { DepartmentService } from '../../services/department/department-service';
 import { Region } from '../../models/region.model';

@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MunicipalityService } from '../../services/municipality/municipality-service';
 import { Municipality } from '../../models/municipality.model';
 
@@ -48,17 +48,19 @@ export class MunicipalityComponent implements OnInit {
     const pages: (number | string)[] = [];
 
     if (total <= 7) {
+      // If total pages is 7 or less, show all pages
       for (let i = 1; i <= total; i++) {
         pages.push(i);
       }
     } else {
-    
+      // Always show first page
       pages.push(1);
 
       if (current > delta + 2) {
         pages.push('...');
       }
 
+      // Show pages around current page
       const start = Math.max(2, current - delta);
       const end = Math.min(total - 1, current + delta);
 
@@ -70,6 +72,7 @@ export class MunicipalityComponent implements OnInit {
         pages.push('...');
       }
 
+      // Always show last page
       if (total > 1) {
         pages.push(total);
       }
@@ -80,11 +83,13 @@ export class MunicipalityComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private municipalityService: MunicipalityService
   ) {}
 
   ngOnInit(): void {
     const code = this.route.snapshot.paramMap.get('code');
+    
     if (code) {
       this.departmentCode.set(code);
       this.loadMunicipalities(code);
@@ -132,5 +137,9 @@ export class MunicipalityComponent implements OnInit {
 
   isNumber(value: number | string): boolean {
     return typeof value === 'number';
+  }
+
+  goToSearch(): void {
+    this.router.navigate(['/search']);
   }
 }

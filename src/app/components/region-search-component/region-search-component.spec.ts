@@ -18,7 +18,7 @@ describe('RegionSearchComponent', () => {
   let router: jasmine.SpyObj<Router>;
 
   beforeEach(async () => {
-    const regionServiceSpy = jasmine.createSpyObj('RegionService', ['searchRegions']);
+    const regionServiceSpy = jasmine.createSpyObj('RegionService', ['searchRegions', 'getRegionByCode']);
     const departmentServiceSpy = jasmine.createSpyObj('DepartmentService', ['getDepartmentsByRegion']);
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
@@ -63,7 +63,6 @@ describe('RegionSearchComponent', () => {
     
     fixture.detectChanges();
     
-
     const sub = component.filteredRegions$.subscribe();
     
     tick(300); 
@@ -163,7 +162,6 @@ describe('RegionSearchComponent', () => {
     component.onRegionSelected(selectedRegion);
     
     expect(component.departments().length).toBe(1);
-
 
     component.searchForm.get('regionName')?.setValue('');
     tick(300);

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { MunicipalityComponent } from './municipality-component';
 import { MunicipalityService } from '../../services/municipality/municipality-service';
@@ -9,6 +9,7 @@ describe('MunicipalityComponent', () => {
   let component: MunicipalityComponent;
   let fixture: ComponentFixture<MunicipalityComponent>;
   let municipalityService: jasmine.SpyObj<MunicipalityService>;
+  let router: jasmine.SpyObj<Router>;
 
   const createMockMunicipalities = (count: number): Municipality[] => {
     return Array.from({ length: count }, (_, i) => ({
@@ -21,7 +22,8 @@ describe('MunicipalityComponent', () => {
 
   beforeEach(async () => {
     const municipalityServiceSpy = jasmine.createSpyObj('MunicipalityService', ['getMunicipalitiesByDepartment']);
-
+    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    
     const activatedRouteMock = {
       snapshot: {
         paramMap: {
@@ -34,11 +36,13 @@ describe('MunicipalityComponent', () => {
       imports: [MunicipalityComponent],
       providers: [
         { provide: MunicipalityService, useValue: municipalityServiceSpy },
-        { provide: ActivatedRoute, useValue: activatedRouteMock }
+        { provide: ActivatedRoute, useValue: activatedRouteMock },
+        { provide: Router, useValue: routerSpy }
       ]
     }).compileComponents();
 
     municipalityService = TestBed.inject(MunicipalityService) as jasmine.SpyObj<MunicipalityService>;
+    router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
     fixture = TestBed.createComponent(MunicipalityComponent);
     component = fixture.componentInstance;
   });
@@ -71,6 +75,8 @@ describe('MunicipalityComponent', () => {
   });
 
   it('should handle errors gracefully', () => {
+    spyOn(console, 'error');
+    
     municipalityService.getMunicipalitiesByDepartment.and.returnValue(
       throwError(() => new Error('API Error'))
     );
@@ -111,7 +117,7 @@ describe('MunicipalityComponent', () => {
 
     expect(component.pageSize()).toBe(20);
     expect(component.paginatedMunicipalities().length).toBe(20);
-    expect(component.currentPage()).toBe(1); // Reset to first page
+    expect(component.currentPage()).toBe(1);
   });
 
   it('should navigate to next page', () => {
@@ -160,9 +166,9 @@ describe('MunicipalityComponent', () => {
 
     component.nextPage();
     component.nextPage();
-    component.nextPage(); // Try to go beyond last page
+    component.nextPage();
 
-    expect(component.currentPage()).toBe(3); // Should stay on last page
+    expect(component.currentPage()).toBe(3);
   });
 
   it('should calculate total pages correctly', () => {
@@ -171,7 +177,7 @@ describe('MunicipalityComponent', () => {
 
     fixture.detectChanges();
 
-    expect(component.totalPages()).toBe(3); // 25 items / 10 per page = 3 pages
+    expect(component.totalPages()).toBe(3);
   });
 
   it('should go to specific page', () => {
@@ -194,5 +200,15 @@ describe('MunicipalityComponent', () => {
 
     expect(component.paginatedMunicipalities().length).toBe(0);
     expect(component.totalPages()).toBe(0);
+  });
+
+  // Navigation tests
+  it('should navigate to search page when goToSearch is called', () => {
+    municipalityService.getMunicipalitiesByDepartment.and.returnValue(of([]));
+    fixture.detectChanges();
+
+    component.goToSearch();
+
+    expect(router.navigate).toHaveBeenCalledWith(['/search']);
   });
 });
